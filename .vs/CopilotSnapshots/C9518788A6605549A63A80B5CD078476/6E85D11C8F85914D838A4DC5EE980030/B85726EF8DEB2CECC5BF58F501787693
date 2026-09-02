@@ -1,0 +1,109 @@
+﻿using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+namespace review2;
+
+public class FilterChain<T>
+{
+    private Dictionary<string, Func<T, T>> _filters = new();
+    private Queue<Dictionary<string, Func<T, T>>> _executionOrder = new();
+    private Stack<Dictionary<string, Func<T, T>>> _historyOfFilters = new();
+
+    public List<string> FindCreditTransactions(IEnumerable<string>? list)
+    {
+        if (list is null) return new List<string>();
+
+        return list
+            .Where(item => !string.IsNullOrEmpty(item) && Regex.IsMatch(item!, "credited", RegexOptions.IgnoreCase))
+            .ToList();
+    }
+
+    public bool ApplyFilter(Func<T, T> filter, string? name = null)
+    {
+        if (filter is null) throw new ArgumentNullException(nameof(filter));
+
+        var filterName = string.IsNullOrWhiteSpace(name) ? $"filter{_filters.Count + 1}" : name;
+        if (_filters.ContainsKey(filterName)) return false;
+
+        _filters.Add(filterName, filter);
+        _executionOrder.Enqueue(filterName);
+        _historyOfFilters.Push(filterName);
+        return true;
+    }
+
+    public void Undo()
+    {
+        if (_historyOfFilters.Count == 0) return;
+
+        var filterName = _historyOfFilters.Pop();
+        RemoveFilterByName(filterName, removeFromHistory: false);
+    }
+
+    public bool RemoveFilterByName(string name)
+    {
+        return RemoveFilterByName(name, removeFromHistory: true);
+    }
+
+    public bool TryGetFilterByName(string name, out Func<T, T>? filter)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            filter = null;
+            return false;
+        }
+
+        return _filters.TryGetValue(name, out filter);
+    }
+
+    public IEnumerable<T> Execute(IEnumerable<T> source)
+    {
+        if (source is null) throw new ArgumentNullException(nameof(source));
+
+        IEnumerable<T> result = source;
+        foreach (var filterName in _executionOrder)
+        {
+            if (_filters.TryGetValue(filterName, out var filter))
+            {
+                result = result.Select(item => filter(item));
+            }
+        }
+
+        return result.ToList();
+    }
+
+    public IReadOnlyCollection<string> HistoryOfFilters => _historyOfFilters.ToArray();
+
+    public IReadOnlyCollection<string> ExecutionPipeline => _executionOrder.ToArray();
+
+    public int Count => _filters.Count;
+
+    private bool RemoveFilterByName(string name, bool removeFromHistory)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return false;
+        if (!_filters.Remove(name)) return false;
+
+        var remainingQueue = _executionOrder.Where(n => !string.Equals(n, name, StringComparison.Ordinal)).ToArray();
+        _executionOrder.Clear();
+        foreach (var item in remainingQueue)
+        {
+            _executionOrder.Enqueue(item);
+        }
+
+        if (removeFromHistory)
+        {
+            var remainingHistory = _historyOfFilters
+                .Where(n => !string.Equals(n, name, StringComparison.Ordinal))
+                .Reverse()
+                .ToArray();
+
+            _historyOfFilters.Clear();
+            foreach (var item in remainingHistory)
+            {
+                _historyOfFilters.Push(item);
+            }
+        }
+
+        return true;
+    }
+}

@@ -1,0 +1,14 @@
+C:\Users\cheta\RiderProjects\review2\review2\bin\Debug\net10.0\review2.exe
+C:\Users\cheta\RiderProjects\review2\review2\bin\Debug\net10.0\review2.deps.json
+C:\Users\cheta\RiderProjects\review2\review2\bin\Debug\net10.0\review2.runtimeconfig.json
+C:\Users\cheta\RiderProjects\review2\review2\bin\Debug\net10.0\review2.dll
+C:\Users\cheta\RiderProjects\review2\review2\bin\Debug\net10.0\review2.pdb
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\review2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\review2.AssemblyInfoInputs.cache
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\review2.AssemblyInfo.cs
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\review2.csproj.CoreCompileInputs.cache
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\review2.dll
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\refint\review2.dll
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\review2.pdb
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\review2.genruntimeconfig.cache
+C:\Users\cheta\RiderProjects\review2\review2\obj\Debug\net10.0\ref\review2.dll
